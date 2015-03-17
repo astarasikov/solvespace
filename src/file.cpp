@@ -500,7 +500,7 @@ bool SolveSpace::LoadFromFile(char *filename) {
         }
     }
 
-    return true;
+    return !fileLoadError;
 }
 
 bool SolveSpace::LoadEntitiesFromFile(char *file, EntityList *le,
