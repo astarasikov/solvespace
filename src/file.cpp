@@ -183,6 +183,7 @@ const SolveSpaceUI::SaveTable SolveSpaceUI::SAVED[] = {
     { 'c',  "Constraint.disp.offset.y", 'f',    &(SS.sv.c.disp.offset.y)      },
     { 'c',  "Constraint.disp.offset.z", 'f',    &(SS.sv.c.disp.offset.z)      },
     { 'c',  "Constraint.disp.style",    'x',    &(SS.sv.c.disp.style)         },
+    { 'c',  "Constraint.disp.toggleA",  'b',    &(SS.sv.c.disp.toggleA)       },
 
     { 's',  "Style.h.v",                'x',    &(SS.sv.s.h.v)                },
     { 's',  "Style.name",               'N',    &(SS.sv.s.name)               },
