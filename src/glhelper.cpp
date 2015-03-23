@@ -5,6 +5,8 @@
 //-----------------------------------------------------------------------------
 #include "solvespace.h"
 
+namespace SolveSpace {
+
 // A public-domain Hershey vector font ("Simplex").
 #include "font.table.h"
 
@@ -620,3 +622,4 @@ void ssglDrawPixelsWithTexture(uint8_t *data, int w, int h)
     glDisable(GL_TEXTURE_2D);
 }
 
+};
