@@ -32,6 +32,7 @@ void SMesh::AddTriangle(STriMeta meta, Vector a, Vector b, Vector c) {
     AddTriangle(&t);
 }
 void SMesh::AddTriangle(STriangle *st) {
+    if(st->meta.alpha != 1.0f) isTransparent = true;
     l.Add(st);
 }
 

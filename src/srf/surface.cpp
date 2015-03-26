@@ -143,6 +143,7 @@ SSurface SSurface::FromTransformationOf(SSurface *a,
 
     ret.h = a->h;
     ret.color = a->color;
+    ret.alpha = a->alpha;
     ret.face = a->face;
 
     ret.degm = a->degm;
@@ -428,7 +429,7 @@ void SSurface::TriangulateInto(SShell *shell, SMesh *sm) {
             poly.UvGridTriangulateInto(sm, this);
         }
 
-        STriMeta meta = { face, color };
+        STriMeta meta = { face, color, alpha };
         for(i = start; i < sm->l.n; i++) {
             STriangle *st = &(sm->l.elem[i]);
             st->meta = meta;
@@ -490,7 +491,7 @@ typedef struct {
 } TrimLine;
 
 void SShell::MakeFromExtrusionOf(SBezierLoopSet *sbls, Vector t0, Vector t1,
-                                 RgbColor color)
+                                 RgbColor color, double alpha)
 {
     // Make the extrusion direction consistent with respect to the normal
     // of the sketch we're extruding.
@@ -518,8 +519,10 @@ void SShell::MakeFromExtrusionOf(SBezierLoopSet *sbls, Vector t0, Vector t1,
     SSurface s0, s1;
     s0 = SSurface::FromPlane(orig.Plus(t0), u, v);
     s0.color = color;
+    s0.alpha = alpha;
     s1 = SSurface::FromPlane(orig.Plus(t1).Plus(u), u.ScaledBy(-1), v);
     s1.color = color;
+    s1.alpha = alpha;
     hSSurface hs0 = surface.AddAndAssignId(&s0),
               hs1 = surface.AddAndAssignId(&s1);
 
@@ -537,6 +540,7 @@ void SShell::MakeFromExtrusionOf(SBezierLoopSet *sbls, Vector t0, Vector t1,
             // it to the list
             SSurface ss = SSurface::FromExtrusionOf(sb, t0, t1);
             ss.color = color;
+            ss.alpha = alpha;
             hSSurface hsext = surface.AddAndAssignId(&ss);
 
             // Translate the curve by t0 and t1 to produce two trim curves
@@ -610,7 +614,7 @@ typedef struct {
 } Revolved;
 
 void SShell::MakeFromRevolutionOf(SBezierLoopSet *sbls, Vector pt, Vector axis,
-                                  RgbColor color)
+                                  RgbColor color, double alpha)
 {
     SBezierLoop *sbl;
 
@@ -665,6 +669,7 @@ void SShell::MakeFromRevolutionOf(SBezierLoopSet *sbls, Vector pt, Vector axis,
                                                              (PI/2)*j,
                                                              (PI/2)*(j+1));
                     ss.color = color;
+                    ss.alpha = alpha;
                     revs.d[j] = surface.AddAndAssignId(&ss);
                 }
             }

@@ -95,6 +95,7 @@ const SolveSpaceUI::SaveTable SolveSpaceUI::SAVED[] = {
     { 'g',  "Group.valB",               'f',    &(SS.sv.g.valB)               },
     { 'g',  "Group.valC",               'f',    &(SS.sv.g.valB)               },
     { 'g',  "Group.color",              'c',    &(SS.sv.g.color)              },
+    { 'g',  "Group.alpha",              'f',    &(SS.sv.g.alpha)              },
     { 'g',  "Group.subtype",            'd',    &(SS.sv.g.subtype)            },
     { 'g',  "Group.skipFirst",          'b',    &(SS.sv.g.skipFirst)          },
     { 'g',  "Group.meshCombine",        'd',    &(SS.sv.g.meshCombine)        },
@@ -313,17 +314,17 @@ bool SolveSpaceUI::SaveToFile(const char *filename) {
     SMesh *m = &(SK.group.elem[SK.group.n-1].runningMesh);
     for(i = 0; i < m->l.n; i++) {
         STriangle *tr = &(m->l.elem[i]);
-        fprintf(fh, "Triangle %08x %08x  "
+        fprintf(fh, "Triangle %08x %08x %.20f "
                 "%.20f %.20f %.20f  %.20f %.20f %.20f  %.20f %.20f %.20f\n",
-            tr->meta.face, tr->meta.color.ToPackedInt(),
+            tr->meta.face, tr->meta.color.ToPackedInt(), tr->meta.alpha,
             CO(tr->a), CO(tr->b), CO(tr->c));
     }
 
     SShell *s = &(SK.group.elem[SK.group.n-1].runningShell);
     SSurface *srf;
     for(srf = s->surface.First(); srf; srf = s->surface.NextAfter(srf)) {
-        fprintf(fh, "Surface %08x %08x %08x %d %d\n",
-            srf->h.v, srf->color.ToPackedInt(), srf->face, srf->degm, srf->degn);
+        fprintf(fh, "Surface %08x %08x %.20f %08x %d %d\n",
+            srf->h.v, srf->color.ToPackedInt(), srf->alpha, srf->face, srf->degm, srf->degn);
         for(i = 0; i <= srf->degm; i++) {
             for(j = 0; j <= srf->degn; j++) {
                 fprintf(fh, "SCtrl %d %d %.20f %.20f %.20f Weight %20.20f\n",
@@ -554,24 +555,39 @@ bool SolveSpaceUI::LoadEntitiesFromFile(const char *file, EntityList *le,
         } else if(StrStartsWith(line, "Triangle ")) {
             STriangle tr; ZERO(&tr);
             unsigned int rgb = 0;
-            if(sscanf(line, "Triangle %x %x  "
+            if(sscanf(line, "Triangle %x %x %lf "
                              "%lf %lf %lf  %lf %lf %lf  %lf %lf %lf",
-                &(tr.meta.face), &rgb,
+                &(tr.meta.face), &rgb, &(tr.meta.alpha),
                 &(tr.a.x), &(tr.a.y), &(tr.a.z),
                 &(tr.b.x), &(tr.b.y), &(tr.b.z),
-                &(tr.c.x), &(tr.c.y), &(tr.c.z)) != 11)
+                &(tr.c.x), &(tr.c.y), &(tr.c.z)) != 12)
             {
-                oops();
+                /* Legacy format without alpha */
+                if(sscanf(line, "Triangle %x %x  "
+                                 "%lf %lf %lf  %lf %lf %lf  %lf %lf %lf",
+                    &(tr.meta.face), &rgb,
+                    &(tr.a.x), &(tr.a.y), &(tr.a.z),
+                    &(tr.b.x), &(tr.b.y), &(tr.b.z),
+                    &(tr.c.x), &(tr.c.y), &(tr.c.z)) != 11) {
+                    oops();
+                }
+                tr.meta.alpha = 1.0f;
             }
             tr.meta.color = RgbColor::FromPackedInt((uint32_t)rgb);
             m->AddTriangle(&tr);
         } else if(StrStartsWith(line, "Surface ")) {
             unsigned int rgb = 0;
-            if(sscanf(line, "Surface %x %x %x %d %d",
-                &(srf.h.v), &rgb, &(srf.face),
-                &(srf.degm), &(srf.degn)) != 5)
+            if(sscanf(line, "Surface %x %x %lf %x %d %d",
+                &(srf.h.v), &rgb, &(srf.alpha), &(srf.face),
+                &(srf.degm), &(srf.degn)) != 6)
             {
-                oops();
+                /* Legacy format without alpha */
+                if(sscanf(line, "Surface %x %x %x %d %d",
+                    &(srf.h.v), &rgb, &(srf.face),
+                    &(srf.degm), &(srf.degn)) != 5) {
+                    oops();
+                }
+                srf.alpha = 1.0f;
             }
             srf.color = RgbColor::FromPackedInt((uint32_t)rgb);
         } else if(StrStartsWith(line, "SCtrl ")) {

@@ -223,7 +223,7 @@ void Group::GenerateShellAndMesh(void) {
         for(sbls = sblss->l.First(); sbls; sbls = sblss->l.NextAfter(sbls)) {
             int is = thisShell.surface.n;
             // Extrude this outer contour (plus its inner contours, if present)
-            thisShell.MakeFromExtrusionOf(sbls, tbot, ttop, color);
+            thisShell.MakeFromExtrusionOf(sbls, tbot, ttop, color, alpha);
 
             // And for any plane faces, annotate the model with the entity for
             // that face, so that the user can select them with the mouse.
@@ -285,7 +285,7 @@ void Group::GenerateShellAndMesh(void) {
         SBezierLoopSetSet *sblss = &(src->bezierLoops);
         SBezierLoopSet *sbls;
         for(sbls = sblss->l.First(); sbls; sbls = sblss->l.NextAfter(sbls)) {
-            thisShell.MakeFromRevolutionOf(sbls, pt, axis, color);
+            thisShell.MakeFromRevolutionOf(sbls, pt, axis, color, alpha);
         }
     } else if(type == IMPORTED) {
         // The imported shell or mesh are copied over, with the appropriate
@@ -458,10 +458,19 @@ void Group::DrawDisplayItems(int t) {
     if(gs.faces > 1) ms2 = gs.face[1].v;
 
     if(SS.GW.showShaded) {
+        if(SS.drawBackFaces && !displayMesh.isTransparent) {
+            // For debugging, draw the backs of the triangles in red, so that we
+            // notice when a shell is open
+            glLightModelf(GL_LIGHT_MODEL_TWO_SIDE, 1);
+        } else {
+            glLightModelf(GL_LIGHT_MODEL_TWO_SIDE, 0);
+        }
+
         glEnable(GL_LIGHTING);
-        ssglFillMesh(specColor, &displayMesh, mh, ms1, ms2);
+        ssglFillMesh(specColor, alpha, &displayMesh, mh, ms1, ms2);
         glDisable(GL_LIGHTING);
     }
+
     if(SS.GW.showEdges) {
         ssglDepthRangeOffset(2);
         ssglColorRGB(Style::Color(Style::SOLID_EDGE));

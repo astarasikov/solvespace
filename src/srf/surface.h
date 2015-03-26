@@ -251,6 +251,7 @@ public:
     hSSurface       newH;
 
     RgbColor        color;
+    double          alpha;
     uint32_t        face;
 
     int             degm, degn;
@@ -361,9 +362,9 @@ public:
     bool                        booleanFailed;
 
     void MakeFromExtrusionOf(SBezierLoopSet *sbls, Vector t0, Vector t1,
-                             RgbColor color);
+                             RgbColor color, double alpha);
     void MakeFromRevolutionOf(SBezierLoopSet *sbls, Vector pt, Vector axis,
-                              RgbColor color);
+                              RgbColor color, double alpha);
 
     void MakeFromUnionOf(SShell *a, SShell *b);
     void MakeFromDifferenceOf(SShell *a, SShell *b);
