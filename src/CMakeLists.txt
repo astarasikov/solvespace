@@ -95,7 +95,7 @@ if(PERL_FOUND AND PERLMODULES_FOUND)
         DEPENDENCIES ${icons})
 endif()
 
-if(WIN32)
+if(WIN32 AND NOT DISABLE_TTF2C)
     add_custom_command(
         OUTPUT "${CMAKE_CURRENT_SOURCE_DIR}/built/bitmapfont.table.h"
         COMMAND ttf2c "${CMAKE_CURRENT_SOURCE_DIR}/built/bitmapfont.table.h")
@@ -309,7 +309,7 @@ target_link_libraries(solvespace
 
 if(WIN32)
     set_target_properties(solvespace PROPERTIES
-        LINK_FLAGS /MANIFEST:NO /SAFESEH:NO)
+        LINK_FLAGS "/MANIFEST:NO /SAFESEH:NO")
 endif()
 
 if(SPACEWARE_FOUND)
