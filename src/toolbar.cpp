@@ -223,7 +223,7 @@ bool GraphicsWindow::ToolbarDrawOrHitTest(int mx, int my,
                 th = SS.TW.LINE_HEIGHT + 2;
 
             double ox = toolbarMouseX + 3, oy = toolbarMouseY + 3;
-            ssglLineWidth(1);
+            glLineWidth(1);
             glColor4d(1.0, 1.0, 0.6, 1.0);
             ssglAxisAlignedQuad(ox, ox+tw, oy, oy+th);
             glColor4d(0.0, 0.0, 0.0, 1.0);
