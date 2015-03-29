@@ -308,7 +308,8 @@ target_link_libraries(solvespace
     "${platform_LIBRARIES}")
 
 if(WIN32)
-    set_target_properties(solvespace PROPERTIES LINK_FLAGS /MANIFEST:NO)
+    set_target_properties(solvespace PROPERTIES
+        LINK_FLAGS /MANIFEST:NO /SAFESEH:NO)
 endif()
 
 if(SPACEWARE_FOUND)
