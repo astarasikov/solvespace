@@ -55,6 +55,13 @@
 #include "solvespace.h"
 #include "../unix/gloffscreen.h"
 
+#ifdef HAVE_SPACEWARE
+#   include <spnav.h>
+#   ifndef SI_APP_FIT_BUTTON
+#       define SI_APP_FIT_BUTTON 31
+#   endif
+#endif
+
 namespace SolveSpace {
 char RecentFile[MAX_RECENT][MAX_PATH];
 
@@ -1406,6 +1413,39 @@ void LoadAllFontFiles(void) {
     FcPatternDestroy(pat);
 }
 
+/* Space Navigator support */
+
+#ifdef HAVE_SPACEWARE
+static GdkFilterReturn GdkSpnavFilter(GdkXEvent *gxevent, GdkEvent *event, gpointer data) {
+    XEvent *xevent = (XEvent*) gxevent;
+
+    spnav_event sev;
+    if(!spnav_x11_event(xevent, &sev))
+        return GDK_FILTER_CONTINUE;
+
+    switch(sev.type) {
+        case SPNAV_EVENT_MOTION:
+            SS.GW.SpaceNavigatorMoved(
+                (double)sev.motion.x,
+                (double)sev.motion.y,
+                (double)sev.motion.z  * -1.0,
+                (double)sev.motion.rx *  0.001,
+                (double)sev.motion.ry *  0.001,
+                (double)sev.motion.rz * -0.001,
+                xevent->xmotion.state & ShiftMask);
+            break;
+
+        case SPNAV_EVENT_BUTTON:
+            if(!sev.button.press && sev.button.bnum == SI_APP_FIT_BUTTON) {
+                SS.GW.SpaceNavigatorButtonUp();
+            }
+            break;
+    }
+
+    return GDK_FILTER_REMOVE;
+}
+#endif
+
 /* Application lifecycle */
 
 void ExitNow(void) {
@@ -1418,6 +1458,10 @@ int main(int argc, char** argv) {
     gtk_disable_setlocale();
 
     Gtk::Main main(argc, argv);
+
+#ifdef HAVE_SPACEWARE
+    gdk_window_add_filter(NULL, GdkSpnavFilter, NULL);
+#endif
 
     CnfLoad();
 
