@@ -307,7 +307,7 @@ float SolveSpace::CnfThawFloat(float v, const char *name) {
     return u.f;
 }
 
-void SetCurrentFilename(const char *filename) {
+void SolveSpace::SetCurrentFilename(const char *filename) {
     if(filename) {
         std::string title = std::string("SolveSpace - ") + filename;
         SetWindowText(GraphicsWnd, title.c_str());
