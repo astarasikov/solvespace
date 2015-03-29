@@ -1016,3 +1016,17 @@ void GraphicsWindow::ToggleBool(bool *v) {
     SS.ScheduleShowTW();
 }
 
+GraphicsWindow::SuggestedConstraint GraphicsWindow::SuggestLineConstraint(hRequest request) {
+    Entity *ptA = SK.GetEntity(request.entity(1)),
+           *ptB = SK.GetEntity(request.entity(2));
+
+    Vector d = ptA->PointGetNum().Minus(ptB->PointGetNum()).ScaledBy(scale);
+
+    const double TOLERANCE = 10.0;
+    if(fabs(d.x) < TOLERANCE)
+        return SUGGESTED_VERTICAL;
+    else if(fabs(d.y) < TOLERANCE)
+        return SUGGESTED_HORIZONTAL;
+    else
+        return SUGGESTED_NONE;
+}
