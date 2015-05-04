@@ -1115,7 +1115,7 @@ void SolveSpace::ExitNow(void) {
 int main(int argc, const char *argv[]) {
     [NSApplication sharedApplication];
     ApplicationDelegate *delegate = [[ApplicationDelegate alloc] init];
-    [NSApp setDelegate:delegate];
+    [NSApp setDelegate:(id<NSFileManagerDelegate>)delegate];
 
     SolveSpace::InitGraphicsWindow();
     SolveSpace::InitTextWindow();

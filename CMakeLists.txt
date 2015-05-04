@@ -45,6 +45,10 @@ if((CMAKE_CXX_PLATFORM_ID STREQUAL "Linux") AND CMAKE_COMPILER_IS_GNUCC)
     set(CMAKE_EXE_LINKER_FLAGS "-Wl,--as-needed ${CMAKE_EXE_LINKER_FLAGS}")
 endif()
 
+if(APPLE)
+    set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -stdlib=libstdc++")
+endif()
+
 # dependencies
 
 CHECK_INCLUDE_FILE("stdint.h" HAVE_STDINT_H)
