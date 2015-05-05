@@ -79,6 +79,12 @@ const GraphicsWindow::MenuEntry GraphicsWindow::menu[] = {
 { 1, "Show Snap &Grid",             MNU_SHOW_GRID,      '>',     IC, mView },
 { 1, "Use &Perspective Projection", MNU_PERSPECTIVE_PROJ,'`',    IC, mView },
 { 1,  NULL,                         0,                  0,       IN, NULL  },
+{ 1, "Invisible lines - Hide",		MNU_INVISIBLE_LINES_OFF, 0,      IN, mView },
+{ 1, "Invisible lines - Solid",		MNU_INVISIBLE_LINES_SOLID, 0,      IN, mView },
+{ 1, "Invisible lines - Dotted",		MNU_INVISIBLE_LINES_DOTTED, 0,      IN, mView },
+{ 1, "Invisible lines - Dashed",		MNU_INVISIBLE_LINES_DASHED, 0,      IN, mView },
+{ 1, "Invisible lines - Dots and dashes",		MNU_INVISIBLE_LINES_DASHED_DOTTED, 0,      IN, mView },
+{ 1,  NULL,                         0,                  0,       IN, NULL  },
 #if defined(__APPLE__)
 { 1, "Show Menu &Bar",              MNU_SHOW_MENU_BAR,  C|F(12), IC, mView },
 #endif
@@ -231,7 +237,7 @@ void GraphicsWindow::Init(void) {
     showNormals = true;
     showPoints = true;
     showConstraints = true;
-    showHdnLines = false;
+    hiddenLinesMode = HIDDEN_LINES_INVISIBLE;
     showShaded = true;
     showEdges = true;
     showMesh = false;
@@ -444,6 +450,22 @@ void GraphicsWindow::MenuView(int id) {
             SS.GW.EnsureValidActives();
             InvalidateGraphics();
             break;
+
+		case MNU_INVISIBLE_LINES_OFF:
+			SS.GW.hiddenLinesMode = HIDDEN_LINES_INVISIBLE;
+			break;
+		case MNU_INVISIBLE_LINES_SOLID:
+			SS.GW.hiddenLinesMode = HIDDEN_LINES_SOLID;
+			break;
+		case MNU_INVISIBLE_LINES_DOTTED:
+			SS.GW.hiddenLinesMode = HIDDEN_LINES_DOTTED;
+			break;
+		case MNU_INVISIBLE_LINES_DASHED:
+			SS.GW.hiddenLinesMode = HIDDEN_LINES_DASHED;
+			break;
+		case MNU_INVISIBLE_LINES_DASHED_DOTTED:
+			SS.GW.hiddenLinesMode = HIDDEN_LINES_DASHED_DOTTED;
+			break;
 
         case MNU_ONTO_WORKPLANE:
             if(SS.GW.LockedInWorkplane()) {

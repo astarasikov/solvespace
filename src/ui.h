@@ -342,6 +342,11 @@ public:
         MNU_ZOOM_TO_FIT,
         MNU_SHOW_GRID,
         MNU_PERSPECTIVE_PROJ,
+        MNU_INVISIBLE_LINES_OFF,
+        MNU_INVISIBLE_LINES_SOLID,
+        MNU_INVISIBLE_LINES_DOTTED,
+        MNU_INVISIBLE_LINES_DASHED,
+        MNU_INVISIBLE_LINES_DASHED_DOTTED,
         MNU_ONTO_WORKPLANE,
         MNU_NEAREST_ORTHO,
         MNU_NEAREST_ISO,
@@ -674,7 +679,15 @@ public:
     bool    showEdges;
     bool    showFaces;
     bool    showMesh;
-    bool    showHdnLines;
+
+    enum HiddenLinesMode {
+        HIDDEN_LINES_INVISIBLE = 0,
+        HIDDEN_LINES_SOLID = 1,
+        HIDDEN_LINES_DOTTED,
+        HIDDEN_LINES_DASHED,
+        HIDDEN_LINES_DASHED_DOTTED,
+    };
+    enum HiddenLinesMode hiddenLinesMode;
     void ToggleBool(bool *v);
 
     bool    showSnapGrid;

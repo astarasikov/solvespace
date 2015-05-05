@@ -696,7 +696,9 @@ nogrid:;
     (SK.GetGroup(activeGroup))->Draw();
 
     // Now draw the entities
-    if(showHdnLines) glDisable(GL_DEPTH_TEST);
+    if (HIDDEN_LINES_SOLID == hiddenLinesMode) {
+        glDisable(GL_DEPTH_TEST);
+    }
     Entity::DrawAll();
 
     // Draw filled paths in all groups, when those filled paths were requested

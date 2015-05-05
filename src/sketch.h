@@ -707,6 +707,7 @@ public:
         ANALYZE        = 11,
         DRAW_ERROR     = 12,
         DIM_SOLID      = 13,
+        HIDDEN_LINE    = 14,
 
         FIRST_CUSTOM   = 0x100
     };

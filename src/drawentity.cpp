@@ -119,6 +119,38 @@ void Entity::Draw(void) {
 
     dogd.drawing = true;
     DrawOrGetDistance();
+
+    /* check if we're drawing invisible lines with a speial style */
+    unsigned stipple_pattern = 0;
+    switch (SS.GW.hiddenLinesMode) {
+        case GraphicsWindow::HIDDEN_LINES_DOTTED:
+            stipple_pattern = 0xaaaa;
+            break;
+        case GraphicsWindow::HIDDEN_LINES_DASHED:
+            stipple_pattern = 0xf0f0;
+            break;
+        case GraphicsWindow::HIDDEN_LINES_DASHED_DOTTED:
+            stipple_pattern = 0xf33c;
+            break;
+        default:
+            return;
+    }
+    {
+        dogd.lineWidth = Style::Width(Style::HIDDEN_LINE);
+        ssglLineWidth((float)dogd.lineWidth);
+        ssglColorRGB(Style::Color(Style::HIDDEN_LINE));
+
+        glEnable(GL_DEPTH_TEST);
+        glDepthFunc(GL_GREATER);
+        glEnable(GL_LINE_STIPPLE);
+        glLineStipple(4, stipple_pattern);
+
+        dogd.drawing = true;
+        DrawOrGetDistance();
+
+        glDisable(GL_LINE_STIPPLE);
+        glDepthFunc(GL_LESS);
+    }
 }
 
 void Entity::GenerateEdges(SEdgeList *el, bool includingConstruction) {

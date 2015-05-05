@@ -131,8 +131,9 @@ void SolveSpaceUI::ExportViewOrWireframeTo(const char *filename, bool wireframe)
         if(!e->IsVisible()) continue;
         if(e->construction) continue;
 
-        if(SS.exportPwlCurves || (sm && !SS.GW.showHdnLines) ||
-                                 fabs(SS.exportOffset) > LENGTH_EPS)
+        if(SS.exportPwlCurves ||
+				(sm && (SS.GW.hiddenLinesMode == GraphicsWindow::HIDDEN_LINES_INVISIBLE)) ||
+				 fabs(SS.exportOffset) > LENGTH_EPS)
         {
             // We will be doing hidden line removal, which we can't do on
             // exact curves; so we need things broken down to pwls. Same
@@ -309,7 +310,7 @@ void SolveSpaceUI::ExportLinesAndMesh(SEdgeList *sel, SBezierList *sbl, SMesh *s
     // And now we perform hidden line removal if requested
     SEdgeList hlrd;
     ZERO(&hlrd);
-    if(sm && !SS.GW.showHdnLines) {
+    if(sm && (SS.GW.hiddenLinesMode == GraphicsWindow::HIDDEN_LINES_INVISIBLE)) {
         SKdNode *root = SKdNode::From(&smp);
 
         // Generate the edges where a curved surface turns from front-facing
